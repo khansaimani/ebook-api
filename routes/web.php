@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/me', function () {
 return [
-    "NIS" => 3103119081,
+    "NIS" => 3103119099,
     "Name" => "Khansa Imani",
     "Gender" => "Perempuan",
     "Phone" => 6281227252595,
