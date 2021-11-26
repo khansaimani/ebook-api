@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Book;
+
 use Illuminate\Http\Request;
+use App\Models\Book;
 
 class BookController extends Controller
 {
@@ -13,13 +14,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $book = Book::get();
-
-        return response()->json([
-            'status' => 200,
-            'data' => $book
-        ], 200);
-
+        return Book::get();
     }
 
     /**
@@ -29,7 +24,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -40,20 +35,14 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $book = Book::create([
+        return Book::create([//
             'title' => $request->title,
             'description' => $request->description,
             'author' => $request->author,
             'publisher' => $request->publisher,
             'date_of_issue' => $request->date_of_issue
+
         ]);
-
-        return response()->json([
-            'status' => 201,
-            'message' => 'Data berhasil disimpan.',
-            'data' => $book
-        ], 201);
-
     }
 
     /**
@@ -64,20 +53,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::find($id);
-
-        if($book) {
-            return response()->json([
-                'status' => 200,
-                'data' => $book
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 404,
-                'message' => 'ID '. $id .' tidak ditemukan.'
-            ], 404);
-        }
-
+        return Book::find($id);
     }
 
     /**
@@ -101,27 +77,14 @@ class BookController extends Controller
     public function update(Request $request, $id)
     {
         $book = Book::find($id);
-        if($book) {
-            $book->update([
-                'title' => $request->title ? $request->title : $book->title,
-                'description' => $request->description ? $request->description : $book->description,
-                'author' => $request->author ? $request->author : $book->author,
-                'publisher' => $request->publisher ? $request->publisher : $book->publisher,
-                'date_of_issue' => $request->date_of_issue ? $request->date_of_issue : $book->date_of_issue
-            ]);
-
-            return response()->json([
-                'status' => 203,
-                'message' => 'Data berhasil diubah.',
-                'data' => $book
-            ], 203);
-        } else {
-            return response()->json([
-                'status' => 404,
-                'message' => 'ID '. $id .' tidak ditemukan.'
-            ], 404);
-        }
-
+        $book->title = $request->title;
+        $book->description = $request->description;
+        $book->author = $request->author;
+        $book->publisher = $request->publisher;
+        $book->author = $request->author;
+        $book->date_of_issue = $request->date_of_issue;
+        $book->save();
+        return response()->json($book, 420); 
     }
 
     /**
@@ -132,21 +95,14 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        $book = Book::find($id);
-
-        if($book) {
-            $book->delete();
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Data berhasil dihapus.',
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 404,
-                'message' => 'ID '. $id .' tidak ditemukan.'
-            ], 404);
-        }
-
+        $book = Book::findOrFail($id);
+        $book->delete();
+        return response()->json([
+            "message" => "Data Buku Telah dihapus",
+            "data" => $book
+        ]);
+    }
+    public function search($title){
+        return Book::where('title', 'like', '%'.$title.'%')->get();
     }
 }
